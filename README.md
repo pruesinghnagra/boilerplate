@@ -10,7 +10,7 @@
 * Testing: Jest, SuperTest & Cheerio
 
 ### The purpose
-* Solidify what I have learned
+* Solidify what the student has learned each
 * Add new tech as the weeks go by in bootcamp
-* Easy for me to start a Friday project with this boilerplate
+* Easy for students to start a Friday project with their boilerplate
 
