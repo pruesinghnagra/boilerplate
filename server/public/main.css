@@ -27,6 +27,7 @@ body {
   align-items: center;
   margin: 50px;
   list-style: none;
+  padding: 0;
 }
 
 .img-circle {
