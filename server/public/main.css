@@ -26,6 +26,7 @@ body {
   flex-direction: column;
   align-items: center;
   margin: 50px;
+  list-style: none;
 }
 
 .img-circle {
