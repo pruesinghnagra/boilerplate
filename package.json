@@ -1,0 +1,32 @@
+{
+  "name": "boilerplate",
+  "version": "0.0.1",
+  "description": "boilerplate example",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watchAll --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pruesinghnagra/boilerplate.git"
+  },
+  "keywords": [
+    "boilerplate",
+    "npm",
+    "js",
+    "SERN"
+  ],
+  "author": "Prue Singh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pruesinghnagra/boilerplate/issues"
+  },
+  "homepage": "https://github.com/pruesinghnagra/boilerplate#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "jest": "^27.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.1"
+  }
+}
