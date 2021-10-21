@@ -2,7 +2,7 @@ const express = require('express')
 
 const router = express.Router()
 
-const { getData, writeData } = require('../utils')
+const { getData, writeData, getById } = require('../utils')
 
 module.exports = router
 
@@ -17,28 +17,26 @@ router.get('/', (req, res) => {
 })
 
 router.get('/puppies/:id', (req, res) => {
-  getData((err, data) => {
+  const id = Number(req.params.id)
+  
+  getById(id, (err, data) => {
     if (err) {
       return res.status(500).send(err.message)
     }
 
-    const id = Number(req.params.id)
-    const puppyDetails = data.puppies.find(puppy => puppy.id === id)
-
-    res.render('details', puppyDetails)
+    res.render('details', data)
   })
 })
 
 router.get('/puppies/:id/edit', (req, res) => {
-  getData((err, data) => {
+  const id = Number(req.params.id)
+
+  getById(id, (err, data) => {
     if (err) {
       return res.status(500).send(err.message)
     }
 
-    const id = Number(req.params.id)
-    const puppyDetails = data.puppies.find(puppy => puppy.id === id)
-
-    res.render('edit', puppyDetails)
+    res.render('edit', data)
   })
 })
 
