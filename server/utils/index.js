@@ -3,7 +3,8 @@ const path = require('path')
 
 module.exports = {
   getData,
-  writeData
+  writeData,
+  getById
 }
 
 const filepath = path.join(__dirname, '../', 'data', 'data.json')
@@ -22,6 +23,21 @@ function getData (cb) {
       console.error(err)
       cb(new Error('Oh no! Unable to parse the data!')) 
     }
+  })
+}
+
+function getById (id, cb) {
+  getData((err, data) => {
+    if (err) {
+      return res.status(500).send(err.message)
+    }
+    try {
+      const details = data.puppies.find(puppy => puppy.id === id)
+      cb(null, details)
+    } catch (err) {
+      console.error(err)
+      cb(new Error('Oh no! Unable to grab by ID!')) 
+    } 
   })
 }
 
