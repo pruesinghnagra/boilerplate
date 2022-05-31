@@ -1,43 +1,31 @@
 const express = require('express')
+const fs = require('fs')
+const path = require('path')
+
+const { getData, writeData, getById } = require('../utils')
+const filepath = path.join(__dirname, '../', 'data', 'data.json')
 
 const router = express.Router()
 
-const { getData, writeData, getById } = require('../utils')
-
 module.exports = router
 
-router.get('/', (req, res) => {
-  getData((err, data) => {
-    if (err) {
-      return res.status(500).send(err.message)
-    }
-    
-    res.render('home', data)
-  })
+router.get('/', async (req, res) => {
+  const data = await getData(filepath)
+  return res.render('home', data)
 })
 
-router.get('/puppies/:id', (req, res) => {
+router.get('/puppies/:id', async (req, res) => {
   const id = Number(req.params.id)
-  
-  getById(id, (err, data) => {
-    if (err) {
-      return res.status(500).send(err.message)
-    }
+  const data = await getById(id, filepath)
 
-    res.render('details', data)
-  })
+  return res.render('details', data)
 })
 
-router.get('/puppies/:id/edit', (req, res) => {
+router.get('/puppies/:id/edit', async (req, res) => {
   const id = Number(req.params.id)
+  const data = await getById(id, filepath)
 
-  getById(id, (err, data) => {
-    if (err) {
-      return res.status(500).send(err.message)
-    }
-
-    res.render('edit', data)
-  })
+  return res.render('edit', data)
 })
 
 router.post('/puppies/:id/edit', (req, res) => {
@@ -45,14 +33,6 @@ router.post('/puppies/:id/edit', (req, res) => {
   const { name, breed, owner, image } = req.body
   const updatedPuppy = { id, name, breed, owner, image }
   
-  writeData(updatedPuppy, (err) => {
-    if (err) {
-      err.code === 404
-      ? res.sendStatus(404)
-      : res.status(500).send(err.message)
-      return
-    }
-
-    res.redirect('/puppies/' + id)
-  })
+  writeData(updatedPuppy)
+  res.redirect('/puppies/' + id)
 })

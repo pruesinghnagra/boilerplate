@@ -1,78 +1,84 @@
 const fs = require('fs')
 const path = require('path')
 
+const filepath = path.join(__dirname, '../', 'data', 'data.json')
+
 module.exports = {
   getData,
   writeData,
   getById
 }
 
-const filepath = path.join(__dirname, '../', 'data', 'data.json')
-
-function getData (cb) {
-  fs.readFile(filepath, (err, data) => {
-    if (err) {
-      console.error('Unable to read file')
-      cb(new Error('Oh no! That file does not exist!'))
-      return
-    }
-    try {
-      const parseData = JSON.parse(data)
-      cb(null, parseData)
-    } catch (err) {
-      console.error(err)
-      cb(new Error('Oh no! Unable to parse the data!')) 
-    }
+function getData (filepath) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filepath, (err, data) => {
+      if (err) {
+        reject(err)
+        return
+      }
+      try {
+        const parseData = JSON.parse(data)
+        resolve(parseData)
+      } catch (err) {
+        console.error(err)
+        return new Error('Oh no! Unable to parse the data!')
+      }
+    })
   })
 }
 
-function getById (id, cb) {
-  getData((err, data) => {
-    if (err) {
-      return res.status(500).send(err.message)
-    }
-    try {
-      const details = data.puppies.find(puppy => puppy.id === id)
-      cb(null, details)
-    } catch (err) {
-      console.error(err)
-      cb(new Error('Oh no! Unable to grab by ID!')) 
-    } 
-  })
+async function getById (id, filepath) {
+  const data = await getData(filepath)
+  try {
+    const details = data.puppies.find(puppy => puppy.id === id)
+    return details
+  } catch (err) {
+    console.error(err)
+    return new Error('Oh no! Unable to grab by ID!')
+  } 
 }
 
-function writeData (updatedData, cb) {
-  getData((err, data) => {
-    if (err) {
-      return res.status(500).send(err.message)
-    }
+async function writeData (updatedData) {
+  const data = await getData(filepath)
     
     const editThisPuppy = data.puppies.find(puppy => puppy.id === updatedData.id)
     if (!editThisPuppy) {
       console.error('Unable to find data')
-      cb(new Error('Oh no! ID was not found!'))
-      return
+      return new Error('Oh no! ID was not found!')
     }
 
     const { name, breed, owner, image} = updatedData
-    editThisPuppy.name = name
-    editThisPuppy.breed = breed
-    editThisPuppy.owner = owner
-    editThisPuppy.image = image
     
     const updatedPuppies = {
       ...data
     }
+
+    // const updatedPuppyTest = Object.assign(editThisPuppy, { name, breed, owner, image })
+    // console.log(updatedPuppyTest)
 
     const stringifyData = JSON.stringify(updatedPuppies,  null, 2)
 
     fs.writeFile(filepath, stringifyData, 'utf8', (err) => {
       if (err) {
         console.error('Unable to write to that file')
-        cb(new Error('Oh no! That file does not want to be written to!'))
-        return
+        return new Error('Oh no! That file does not want to be written to!')
       }
-      cb()
+      return stringifyData
     })
-  })
 }
+
+// function addData (data, cb) {
+//   const newPuppy = {
+//     ...data
+//   }
+//   const newPuppyData = JSON.stringify(newPuppy, null, 2)
+
+//   fs.writeFile(filepath, newPuppyData, 'utf8', (err) => {
+//     if (err) {
+//       console.error('Unable to write to that file')
+//       cb(new Error('Oh no! That file does not want to be written to!'))
+//       return 
+//     }
+//     cb()
+//   })
+// }
